@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<title>七上历史 1—8课 · 手机填空</title>
+<style>
+  :root{
+    --red:#b4232a; --red-dark:#8f1c22;
+    --ink:#1f2430; --ink2:#5a6376; --ink3:#8b93a3;
+    --line:#e3e7ee; --bg:#f4f6f9; --card:#fff;
+    --blue:#2a5d8f; --blue-soft:#eef5fc;
+    --gold:#a8801f; --gold-soft:#fdf8ea;
+    --green:#1f7a46;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Source Han Sans SC",sans-serif;
+    font-size:17px; line-height:1.8; padding-bottom:60px;
+    -webkit-text-size-adjust:100%;
+  }
+  .ctl{position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; clip:rect(0 0 0 0);}
+
+  header{
+    background:linear-gradient(135deg,#8f1c22 0%,#b4232a 60%,#c94a3c 100%);
+    color:#fff; padding:18px 16px 16px;
+  }
+  header h1{margin:0 0 4px; font-size:20px; line-height:1.4; letter-spacing:.3px;}
+  header .sub{font-size:13px; opacity:.9;}
+  .answer-tip{
+    margin-top:12px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.4);
+    border-radius:12px; padding:11px 12px; font-size:14.5px; line-height:1.75;
+  }
+  .answer-tip b{color:#ffe9a8;}
+
+  .toolbar{
+    position:sticky; top:0; z-index:30; background:rgba(244,246,249,.97);
+    border-bottom:1px solid var(--line); padding:8px 12px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .toolbar .hint{font-size:12.5px; color:var(--ink3); margin-left:auto; text-align:right;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-height:42px; padding:0 15px; border-radius:10px;
+    border:1px solid var(--line); background:#fff; color:var(--ink2);
+    font-size:15px; font-family:inherit; user-select:none; -webkit-user-select:none;
+  }
+  .btn.primary{background:var(--red); border-color:var(--red); color:#fff; font-weight:600;}
+  .btn.small{min-height:38px; padding:0 13px; font-size:14.5px; border-radius:9px;}
+  .btn.ok{color:#146c43; border-color:#bfe3cd; background:#f2fbf5;}
+  .when-show{display:none;}
+  #ansAll:checked ~ .toolbar .when-hide{display:none;}
+  #ansAll:checked ~ .toolbar .when-show{display:inline;}
+
+  .wrap{padding:14px 12px 0;}
+  .wrap .lesson{margin-bottom:22px;}
+  .lesson h2{
+    font-size:17px; color:var(--red); margin:0 0 10px;
+    padding:8px 12px; background:#fff; border-radius:10px;
+    border-left:5px solid var(--red); box-shadow:0 1px 3px rgba(31,36,48,.05);
+    display:flex; align-items:baseline; justify-content:space-between; gap:8px;
+  }
+  .lesson h2 .cnt{font-size:12.5px; color:var(--ink3); font-weight:400; white-space:nowrap;}
+
+  .qcard{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:13px 13px 11px; margin-bottom:11px; box-shadow:0 1px 3px rgba(31,36,48,.04);
+  }
+  .qcard .qnum{
+    display:inline-block; min-width:26px; height:26px; line-height:26px; text-align:center;
+    background:#f2f4f8; color:var(--ink2); border-radius:8px;
+    font-size:13.5px; font-weight:700; margin-right:7px; vertical-align:1px;
+  }
+  .qtext{font-size:17px; line-height:2.0;}
+  .qtext .ans{
+    color:transparent; font-weight:700; padding:0 4px; margin:0 1px;
+    border-bottom:2px solid #98a3b5; border-radius:2px;
+  }
+  .answer-input{
+    width:100%; margin-top:11px; padding:12px 13px;
+    font-size:17px; font-family:inherit; color:var(--ink);
+    background:#fbfcfe; border:2px dashed #c6cedb; border-radius:11px;
+    outline:none; -webkit-appearance:none; appearance:none;
+  }
+  .answer-input::placeholder{color:#a8b0be; font-size:15.5px;}
+  .answer-input:focus{border-style:solid; border-color:var(--red); background:#fff;}
+  .qrow{display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap;}
+  .qrow .mark{font-size:12.5px; color:var(--ink3); margin-left:auto;}
+
+  /* 单题显示答案 */
+  .qcard .qbody > .ans-reveal{display:none;}
+  .qcard .qtext-revealed{display:none;}
+
+  /* 用 :has 之外的兄弟选择器实现：checkbox 与被控容器同为 .qcard 子元素 */
+  /*
+     说明：结构为 .qcard > [input.ctl, input.ctl, .qbody]
+     所以 #qN:checked ~ .qbody 有效
+  */
+
+  /* 全局显示答案 */
+  #ansAll:checked ~ .wrap .qtext .ans{color:var(--red); border-bottom-color:rgba(180,35,42,.35);}
+
+  /* 每课的页脚提示 */
+  .tips{
+    margin-top:10px; padding:11px 13px; background:var(--blue-soft);
+    border-left:4px solid var(--blue); border-radius:0 10px 10px 0;
+    font-size:14px; color:var(--ink2);
+  }
+  .tips b{color:var(--blue);}
+  footer{text-align:center; font-size:12.5px; color:var(--ink3); padding:18px 16px 26px; line-height:1.9;}
+
+  @media print{
+    body{background:#fff; font-size:12px;}
+    .toolbar{display:none;}
+    header{background:#fff; color:#000; box-shadow:none; border-bottom:2px solid var(--red);}
+    .answer-tip{background:#fff; border-color:#ccc; color:#333;}
+    .answer-tip b{color:#000;}
+    .qcard{break-inside:avoid; page-break-inside:avoid; box-shadow:none; border:none; border-bottom:1px dashed #ccc; border-radius:0; padding:6px 0;}
+    .answer-input{display:none;}
+    .qrow{display:none;}
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.toolbar{flex-wrap:wrap;position:relative}.toolbar label{font-size:14px}select{font:inherit;max-width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:white}#progress{width:100%;font-size:14px;color:var(--ink2)}.storage-note,#empty{margin:12px;font-size:13px;color:var(--ink2)}.fields{display:grid;gap:10px;margin-top:14px}.field label{display:block;font-size:14px;color:var(--ink2)}.answer-input{margin-top:4px}.field-result{font-size:14px;margin-top:4px}.field.correct .answer-input{border:2px solid var(--green)}.field.incorrect .answer-input{border:2px solid var(--red)}.field.correct .field-result{color:var(--green)}.field.incorrect .field-result{color:var(--red)}.feedback{margin-top:10px;font-size:14px;white-space:pre-line}.qcard.revealed .qtext .ans{color:var(--red)}.qcard.revealed .when-hide{display:none}.qcard.revealed .when-show{display:inline}.qtext .ans{color:var(--blue);white-space:nowrap}.qcard.passed{border-color:var(--green)}.btn{cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}[hidden]{display:none!important}.wrap{max-width:760px;margin:auto}.qtext{overflow-wrap:anywhere} @media print{.fields,.feedback,.storage-note{display:none}}
+</style>
+</head>
+<body>
+<div id="runtimeWarning" role="status" style="margin:12px;padding:12px;border:1px solid #b4232a;background:#fff4e5;color:#702020">交互功能尚未加载。如果这条提示一直显示、按钮无响应，当前打开方式可能不支持交互，请改用浏览器打开可访问的网页链接。</div>
+<input class="ctl" id="ansAll" type="checkbox">
+
+<header>
+  <h1>历史知识练习 · 第1—8课</h1>
+  <div class="sub">统编版（2024）· 共 8 课 / 63 题 / 144 空 · 手机专版</div>
+  <div class="answer-tip">每个空分别输入答案，答完后点<b>「检查本题」</b>。答错可以修改后再试。</div>
+</header>
+
+<div class="toolbar"><label>练习范围 <select id="lessonFilter"><option value="all">全部课程</option></select></label><button class="btn small" id="wrongFilter" aria-pressed="false">只练错题</button><button class="btn small" id="reset">重新练习</button><div id="progress" role="status"></div></div><div id="resetPanel" hidden style="margin:12px;padding:14px;background:white;border:1px solid #b4232a;border-radius:10px" role="group" aria-label="确认重新练习"><p>清空全部 63 题的答案和练习记录？此操作不能撤销。</p><button class="btn primary" id="confirmReset">确认重新练习</button> <button class="btn" id="cancelReset">取消</button></div><p class="storage-note" id="storageNote">进度仅保存在当前浏览器，不会同步到其他设备。按本页预设答案校验，近义表达未匹配时可查看答案核对。</p><p id="empty" hidden>这个范围内暂时没有错题。</p>
+
+<div class="wrap">
+<section class="lesson">
+  <h2>第 1 课 远古时期的人类活动<span class="cnt">6 题 · 10 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q1a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">1</span>我国境内目前已知最早的古人类之一是<span class="ans">元谋</span>人，距今约<span class="ans">170 万</span>年，发现于云南省元谋县。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q1a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q2a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">2</span>距今约 70 万—20 万年，生活在北京西南周口店龙骨山上的<span class="ans">北京</span>人，使用<span class="ans">打制</span>石器，属于<span class="ans">旧石器</span>时代。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q2a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q3a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">3</span>北京人已经会使用<span class="ans">天然火</span>，并会长时间保存火种。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q3a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q4a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">4</span>周口店北京人遗址是迄今所知世界上内涵最丰富、材料最齐全的<span class="ans">直立人</span>遗址之一。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q4a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q5a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">5</span>距今约 3 万年的<span class="ans">山顶洞</span>人，会<span class="ans">人工取火</span>，掌握磨光和钻孔技术，会缝制衣服，有了爱美意识。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q5a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q6a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">6</span>研究远古人类生产生活状况的主要依据是化石、石器等<span class="ans">考古实物史料</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q6a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<section class="lesson">
+  <h2>第 2 课 原始农业与史前社会<span class="cnt">7 题 · 18 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q7a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">7</span>距今约<span class="ans">1 万</span>年，我国出现了最早的人工栽培农作物，是世界上最早栽培<span class="ans">水稻</span>、<span class="ans">粟</span>和黍的国家之一。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q7a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q8a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">8</span>原始农业兴起和发展的重要标志有：农作物种植、家畜饲养、<span class="ans">磨制石器</span>的使用、制作陶器和<span class="ans">定居生活</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q8a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q9a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">9</span>河姆渡人生活在<span class="ans">长江</span>流域的浙江余姚，距今约<span class="ans">7000</span>年，居住<span class="ans">干栏式</span>建筑，使用农具<span class="ans">骨耜</span>，种植<span class="ans">水稻</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q9a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q10a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">10</span>半坡人生活在<span class="ans">黄河</span>流域的陕西西安，距今约 6000 年，居住<span class="ans">半地穴式圆形</span>房屋，种植粟和黍，制作<span class="ans">彩陶</span>，典型器物是人面鱼纹陶盆。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q10a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q11a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">11</span>河姆渡人与半坡人房屋样式、农作物不同，根本原因是两地<span class="ans">自然地理环境</span>不同。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q11a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q12a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">12</span>距今约 7000—5000 年的<span class="ans">仰韶文化</span>，分布于黄河中游，以<span class="ans">彩陶</span>为典型特征。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q12a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q13a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">13</span>距今约 5900—4400 年的<span class="ans">大汶口文化</span>，晚期出现了<span class="ans">贫富分化</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q13a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<section class="lesson">
+  <h2>第 3 课 中华文明的起源<span class="cnt">9 题 · 22 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q14a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">14</span><span class="ans">私有制</span>、<span class="ans">阶级</span>和<span class="ans">国家</span>的产生，是人类进入文明社会的重要标志。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q14a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q15a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">15</span>良渚古城位于浙江<span class="ans">余杭</span>，距今约<span class="ans">5300—4300</span>年，出土了祭祀用的<span class="ans">玉琮、玉璧</span>和象征军事指挥权的<span class="ans">玉钺</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q15a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q16a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">16</span>良渚古城的考古发现证实，距今约 5000 年，<span class="ans">长江下游</span>地区已经出现早期国家。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q16a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q17a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">17</span>陶寺古城位于山西<span class="ans">襄汾</span>，距今约 4300—4000 年，它的发现表明当时<span class="ans">黄河中游</span>地区已经出现早期国家。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q17a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q18a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">18</span>良渚古城、陶寺古城等考古发现，表明中华文明的起源和初步发展具有<span class="ans">多元一体</span>的特征。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q18a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q19a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">19</span>传说中，黄帝在<span class="ans">阪泉</span>之战中打败炎帝，两大部落结成<span class="ans">炎黄联盟</span>；后来炎黄联盟在<span class="ans">涿鹿</span>之战中打败<span class="ans">蚩尤</span>，逐步形成<span class="ans">华夏族</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q19a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q20a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">20</span>后人尊崇炎帝、黄帝为中华民族的"<span class="ans">人文初祖</span>"，海内外华人常以"<span class="ans">炎黄子孙</span>"自称。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q20a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q21a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">21</span>尧、舜、禹时期，把部落联盟首领的位子传给<span class="ans">贤德之人</span>，这种制度称为<span class="ans">禅让制</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q21a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q22a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">22</span>大禹治水采用<span class="ans">疏导</span>的方法，"三过家门而不入"，体现了<span class="ans">公而忘私</span>的精神。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q22a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<section class="lesson">
+  <h2>第 4 课 夏商西周王朝的更替<span class="cnt">8 题 · 19 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q23a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">23</span>约<span class="ans">公元前 2070</span>年，<span class="ans">禹</span>建立夏朝，这是我国历史上第一个<span class="ans">奴隶制</span>王朝。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q23a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q24a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">24</span>禹的儿子<span class="ans">启</span>继承王位，<span class="ans">世袭制</span>取代了禅让制，"<span class="ans">公天下</span>"变成了"<span class="ans">家天下</span>"。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q24a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q25a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">25</span>约公元前 1600 年，<span class="ans">汤</span>灭夏，建立商朝；后来<span class="ans">盘庚</span>迁都到殷（今河南安阳），商朝因此又称"殷"。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q25a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q26a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">26</span><span class="ans">公元前 1046</span>年，周武王伐纣，双方在<span class="ans">牧野</span>之战中决战，商军大败，商朝灭亡。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q26a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q27a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">27</span>西周建立后，周天子把土地和人民分给<span class="ans">宗亲和功臣</span>，封他们为诸侯，这一制度叫<span class="ans">分封制</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q27a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q28a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">28</span>受封的诸侯必须<span class="ans">向周王进献贡赋</span>，并<span class="ans">服从周王调兵</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q28a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q29a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">29</span>公元前 841 年，西周发生"<span class="ans">国人暴动</span>"；公元前 <span class="ans">771</span> 年，<span class="ans">犬戎</span>攻破镐京，西周灭亡。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q29a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q30a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">30</span>公元前 770 年，周平王迁都<span class="ans">洛邑</span>，东周开始。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q30a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<section class="lesson">
+  <h2>第 5 课 动荡变化中的春秋时期<span class="cnt">6 题 · 14 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q31a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">31</span>东周开始于公元前 <span class="ans">770</span> 年，分为<span class="ans">春秋</span>和<span class="ans">战国</span>两个时期。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q31a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q32a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">32</span>春秋时期，周天子的地位下降，诸侯不再定期朝觐、纳贡，<span class="ans">分封制</span>逐步瓦解，出现"<span class="ans">王室衰微</span>"的局面。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q32a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q33a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">33</span>春秋时期第一个称霸的是<span class="ans">齐桓公</span>，他任用<span class="ans">管仲</span>改革内政、发展生产，打出"<span class="ans">尊王攘夷</span>"的旗号。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q33a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q34a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">34</span>齐桓公在<span class="ans">葵丘</span>会盟诸侯，成为春秋时期第一个霸主；晋文公则在<span class="ans">城濮之战</span>中大败楚军。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q34a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q35a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">35</span>春秋后期，<span class="ans">铁制农具</span>和<span class="ans">牛耕</span>出现，是社会生产力水平提高的重要标志。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q35a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q36a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">36</span>春秋时期的争霸战争给社会带来灾难，但客观上促进了<span class="ans">局部统一</span>和<span class="ans">民族交融</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q36a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<section class="lesson">
+  <h2>第 6 课 战国时期的社会变革<span class="cnt">7 题 · 17 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q37a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">37</span>战国七雄是<span class="ans">齐、楚、燕、韩、赵、魏、秦</span>。其中韩、赵、魏三国由<span class="ans">三家分晋</span>而来，齐国政权则被田氏取代，史称<span class="ans">田氏代齐</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q37a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q38a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">38</span>战国时期著名的战役有桂陵之战、马陵之战和<span class="ans">长平之战</span>，其中长平之战后东方六国再也无力抵御秦军。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q38a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q39a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">39</span><span class="ans">公元前 356</span>年，<span class="ans">秦孝公</span>任用<span class="ans">商鞅</span>主持变法。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q39a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q40a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">40</span>商鞅变法在政治上确立<span class="ans">县制</span>，废除贵族的<span class="ans">世袭特权</span>，改革户籍制度，严明法度。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q40a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q41a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">41</span>商鞅变法在经济上废除<span class="ans">井田制</span>，允许土地<span class="ans">自由买卖</span>，奖励耕织，统一<span class="ans">度量衡</span>；在军事上奖励<span class="ans">军功</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q41a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q42a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">42</span>商鞅变法使秦国国力大为增强，成为<span class="ans">最强盛</span>的诸侯国，为以后秦统一中国奠定了基础。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q42a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q43a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">43</span>公元前 256 年，秦国蜀郡郡守<span class="ans">李冰</span>主持修建<span class="ans">都江堰</span>，使成都平原成为"<span class="ans">天府之国</span>"。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q43a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<section class="lesson">
+  <h2>第 7 课 百家争鸣<span class="cnt">8 题 · 23 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q44a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">44</span><span class="ans">老子</span>是春秋后期楚国人，<span class="ans">道家</span>学派的创始人，主张"<span class="ans">无为而治</span>"，他的学说记录在《老子》（又称《<span class="ans">道德经</span>》）中。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q44a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q45a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">45</span>老子认为，世间事物有对立面，且对立面可以相互<span class="ans">转化</span>，这体现了他朴素的<span class="ans">辩证法</span>思想。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q45a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q46a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">46</span><span class="ans">孔子</span>是春秋后期鲁国人，<span class="ans">儒家</span>学派的创始人，他的核心思想是"<span class="ans">仁</span>"，主张"<span class="ans">为政以德</span>"。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q46a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q47a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">47</span>孔子在教育上创办私学，主张"<span class="ans">有教无类</span>"，注重"<span class="ans">因材施教</span>"；他的言论被弟子整理成《<span class="ans">论语</span>》。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q47a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q48a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">48</span>战国时期，儒家代表<span class="ans">孟子</span>主张实行"<span class="ans">仁政</span>"，提出"<span class="ans">民贵君轻</span>"的思想；另一位儒家代表<span class="ans">荀子</span>主张实行"礼治"。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q48a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q49a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">49</span>道家代表<span class="ans">庄子</span>强调治国要顺应自然和民心；法家集大成者<span class="ans">韩非</span>主张"<span class="ans">以法治国</span>"，建立中央集权专制统治。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q49a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q50a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">50</span>墨家创始人<span class="ans">墨子</span>主张"<span class="ans">兼爱</span>""非攻"，提倡节俭。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q50a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q51a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">51</span>百家争鸣促进了思想文化的繁荣，是中国古代第一次<span class="ans">思想文化发展高峰</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q51a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<section class="lesson">
+  <h2>第 8 课 夏商周时期的科技与文化<span class="cnt">12 题 · 21 空</span></h2>
+  <div class="qcard">
+    <input class="ctl" id="q52a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">52</span>商朝甲骨文中已有<span class="ans">日食、月食</span>的记载；《诗经》中公元前 776 年 9 月 6 日的日食，是我国历史上<span class="ans">第一次有确切日期</span>的日食记录。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q52a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q53a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">53</span>《春秋》中记载了公元前 613 年一颗彗星扫过北斗，这是世界上关于<span class="ans">哈雷彗星</span>最早的确切记载。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q53a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q54a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">54</span>夏朝时可能已经有了历法，商朝时历法逐渐完备；到战国时期，人们已经把一年分为<span class="ans">二十四节气</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q54a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q55a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">55</span>战国时期的名医<span class="ans">扁鹊</span>发明了切脉诊法，使用的"<span class="ans">望、闻、问、切</span>"四种诊疗方法一直被中医沿用。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q55a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q56a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">56</span>战国时期的《<span class="ans">黄帝内经</span>》是一部重要的中医理论著作，是中医学的奠基之作。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q56a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q57a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">57</span>甲骨文是刻写在<span class="ans">龟甲和牛、羊等兽骨</span>上的文字，<span class="ans">1899</span> 年由清朝官员<span class="ans">王懿荣</span>首次发现。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q57a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q58a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">58</span>甲骨文已经具备了汉字的基本结构，是我国已发现的古代文字中<span class="ans">年代最早、体系较为完整</span>的成熟文字。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q58a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q59a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">59</span>目前所知，我国有文字可考的历史从<span class="ans">商朝</span>开始。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q59a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q60a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">60</span>商周时期的青铜器数量多、种类丰富，主要用于<span class="ans">祭祀和军事</span>，代表器物有<span class="ans">司母戊鼎</span>和四羊方尊；铸刻在青铜器上的文字被称为<span class="ans">金文</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q60a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q61a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">61</span>《诗经》是我国现存<span class="ans">第一部诗歌总集</span>，共 300 多篇，分为"<span class="ans">风、雅、颂</span>"三部分。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q61a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q62a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">62</span>战国时期，楚国<span class="ans">屈原</span>等人创造出新体诗歌"<span class="ans">楚辞</span>"，代表作是《<span class="ans">离骚</span>》。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q62a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+  <div class="qcard">
+    <input class="ctl" id="q63a" type="checkbox">
+    
+    <div class="qbody">
+      <div class="qtext"><span class="qnum">63</span>《诗经》和"楚辞"是我国古典诗歌的<span class="ans">两大源头</span>。</div>
+      <div class="fields"></div>
+      <div class="qrow">
+        <label class="btn small" for="q63a"><span class="when-hide">看答案</span><span class="when-show">藏答案</span></label>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+  <div class="tips">
+    <b>错题怎么用：</b>错的题不要只抄答案——回到课本找到原句，用荧光笔画出来；再在课本目录对应课后面写 1 个关键词。再隐藏答案，尝试独立回答一次。
+  </div>
+</div>
+
+<footer>
+  七年级上册历史 第1—8课 · 手机填空自测<br>
+  先答后看，错的回课本划原句。题目沿用原稿，教材内容尚未逐条核对。
+</footer>
+
+<noscript>请使用支持 JavaScript 的浏览器打开，才能检查答案。</noscript><script>
+(()=>{
+'use strict';
+const KEY='qingxin-history-1-8-v1';
+const aliases={
+'元谋':['元谋人'],'北京':['北京人'],'旧石器':['旧石器时代'],'打制':['打制石器'],'山顶洞':['山顶洞人'],
+'考古实物史料':['实物史料','考古实物'],'长江':['长江流域'],'黄河':['黄河流域'],'干栏式':['干栏式建筑','干栏式房屋'],'半地穴式圆形':['半地穴式圆形房屋','半地穴式'],
+'自然地理环境':['自然环境','地理环境'],'余杭':['浙江余杭'],'襄汾':['山西襄汾'],'阪泉':['阪泉之战'],'涿鹿':['涿鹿之战'],'牧野':['牧野之战'],
+'贤德之人':['有贤德的人','贤能之人'],'禅让制':['禅让制度'],'世袭制':['世袭制度'],'奴隶制':['奴隶制王朝'],
+'向周王进献贡赋':['进献贡赋'],'服从周王调兵':['服从调兵'],'县制':['县制度'],'道家':['道家学派'],'儒家':['儒家学派'],'韩非':['韩非子'],
+'龟甲和牛、羊等兽骨':['龟甲和兽骨','龟甲兽骨'],'司母戊鼎':['后母戊鼎'],'商朝':['商','商代'],'两大源头':['两大起源']
+};
+function number(s){const d={'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9};if(!/[十百千万]/.test(s))return [...s].map(c=>d[c]??c).join('');let total=0,section=0,n=0;for(const c of s){if(c in d)n=d[c];else if(/\d/.test(c))n=n*10+Number(c);else if(c==='万'){total+=(section+n)*10000;section=0;n=0;}else{section+=(n||1)*({'十':10,'百':100,'千':1000}[c]);n=0;}}return String(total+section+n);}
+function norm(s){return s.normalize('NFKC').replace(/\s/g,'').trim().replace(/[零〇一二两三四五六七八九十百千万\d]+/g,number).replace(/[—–~～至到]/g,'-').replace(/[\s，。、；;：:！!？?“”‘’"'《》（）()]/g,'').replace(/年$/,'');}
+const sets={'玉琮、玉璧':['玉琮','玉璧'],'齐、楚、燕、韩、赵、魏、秦':['齐','楚','燕','韩','赵','魏','秦'],'日食、月食':['日食','月食'],'望、闻、问、切':['望','闻','问','切'],'风、雅、颂':['风','雅','颂'],'祭祀和军事':['祭祀','军事'],'宗亲和功臣':['宗亲','功臣']};
+function matches(value,answer){if([answer,...(aliases[answer]||[])].some(x=>norm(x)===norm(value)))return true;if(sets[answer]){let v=norm(value).replace(/[和与及、,]/g,'');for(const token of sets[answer]){const t=norm(token);if(!v.includes(t))return false;v=v.replace(t,'');}return v==='';}return false;}
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}');if(!saved||typeof saved!=='object')saved={};}catch{document.querySelector('#storageNote').textContent='此浏览器无法读取进度；本次仍可正常作答。';}
+const cards=[];let wrongOnly=false;
+const filter=document.querySelector('#lessonFilter');
+document.querySelectorAll('.lesson').forEach((lesson,i)=>{lesson.dataset.lesson=String(i);const o=document.createElement('option');o.value=String(i);o.textContent=lesson.querySelector('h2').childNodes[0].textContent.trim();filter.append(o);});
+function persist(){const data={};cards.forEach(q=>data[q.id]={values:q.inputs.map(x=>x.value),status:q.status,wrong:q.wrong,seen:q.seen});try{localStorage.setItem(KEY,JSON.stringify(data));}catch{document.querySelector('#storageNote').textContent='此浏览器无法保存进度；关闭页面后可能丢失，本次仍可正常作答。';}}
+function refresh(){const scope=cards.filter(q=>filter.value==='all'||q.lesson.dataset.lesson===filter.value);let visible=0;cards.forEach(q=>{q.card.hidden=!scope.includes(q)||(wrongOnly&&!q.wrong);if(!q.card.hidden)visible++;});document.querySelectorAll('.lesson').forEach(l=>l.hidden=![...l.querySelectorAll('.qcard')].some(c=>!c.hidden));document.querySelector('#empty').hidden=visible!==0;document.querySelector('#progress').textContent=`当前范围 ${scope.length} 题 · 已校验 ${scope.filter(q=>q.status!=='new').length} 题 · 通过 ${scope.filter(q=>q.status==='correct').length} 题 · 待复习 ${scope.filter(q=>q.wrong).length} 题`;}
+function check(q,restore=false){let correct=0,empty=0;q.inputs.forEach((input,i)=>{const field=input.parentElement;const msg=field.querySelector('.field-result');field.classList.remove('correct','incorrect');if(!input.value.trim()){empty++;msg.textContent='尚未填写';return;}if(matches(input.value,q.answers[i])){correct++;field.classList.add('correct');msg.textContent='✓ 正确';}else{field.classList.add('incorrect');msg.textContent='答案未匹配，请检查后修改，也可以查看参考答案。';}});q.status=empty?'incomplete':correct===q.answers.length?'correct':'incorrect';if(correct+empty<q.answers.length)q.wrong=true;if(q.status==='correct'&&!q.seen)q.wrong=false;q.card.classList.toggle('passed',q.status==='correct');q.feedback.textContent=q.status==='correct'?(q.seen?'全部匹配。你已看过答案，可点击「独立再答」巩固。':'✓ 本题全部正确！'):empty?`还有 ${empty} 空未填写，已答对 ${correct} 空。`:`已答对 ${correct}/${q.answers.length} 空，修改后再检查。`;if(!restore){persist();refresh();}}
+document.querySelectorAll('.qcard').forEach((card,index)=>{const id=String(index+1),answers=[...card.querySelectorAll('.ans')].map(x=>x.textContent.trim());const q={id,card,answers,inputs:[],lesson:card.closest('.lesson'),status:'new',wrong:false,seen:false,feedback:document.createElement('div')};q.feedback.className='feedback';q.feedback.setAttribute('role','status');card.querySelector('.qbody').append(q.feedback);const prior=saved[id]||{};q.wrong=prior.wrong===true;q.seen=prior.seen===true;
+card.querySelectorAll('.ans').forEach((span,i)=>{span.dataset.answer=answers[i];span.textContent=`（${i+1}）`;});
+answers.forEach((answer,i)=>{const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.htmlFor=`answer-${id}-${i}`;label.textContent=`第 ${i+1} 空`;const input=document.createElement('input');input.id=label.htmlFor;input.className='answer-input';input.type='text';input.autocomplete='off';input.placeholder='请输入答案';input.enterKeyHint=i===answers.length-1?'done':'next';input.value=typeof prior.values?.[i]==='string'?prior.values[i]:'';const result=document.createElement('div');result.className='field-result';result.id=`result-${id}-${i}`;input.setAttribute('aria-describedby',result.id);field.append(label,input,result);card.querySelector('.fields').append(field);q.inputs.push(input);input.addEventListener('input',()=>{q.status='new';card.classList.remove('passed');q.inputs.forEach(x=>{x.parentElement.classList.remove('correct','incorrect');x.parentElement.querySelector('.field-result').textContent='';});q.feedback.textContent='答案已修改，请检查本题。';persist();refresh();});input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();if(i<answers.length-1)q.inputs[i+1].focus();else{input.blur();check(q);}}});});
+const row=card.querySelector('.qrow');const reveal=row.querySelector('label');const button=document.createElement('button');button.type='button';button.className='btn small primary';button.textContent='检查本题';button.addEventListener('click',()=>check(q));row.prepend(button);
+card.querySelector('input.ctl').addEventListener('change',e=>{const shown=e.target.checked;card.classList.toggle('revealed',shown);card.querySelectorAll('.ans').forEach((x,i)=>x.textContent=shown?answers[i]:`（${i+1}）`);if(shown){q.seen=true;q.feedback.textContent='已显示参考答案。看懂后可以独立再答。';persist();}});
+const retry=document.createElement('button');retry.type='button';retry.className='btn small';retry.textContent='独立再答';retry.addEventListener('click',()=>{q.inputs.forEach(x=>{x.value='';x.parentElement.classList.remove('correct','incorrect');x.parentElement.querySelector('.field-result').textContent='';});q.status='new';q.seen=false;card.classList.remove('passed','revealed');card.querySelector('input.ctl').checked=false;card.querySelectorAll('.ans').forEach((x,i)=>x.textContent=`（${i+1}）`);q.feedback.textContent='答案已隐藏，试着独立回答。';persist();refresh();q.inputs[0].focus();});row.append(retry);cards.push(q);if(['correct','incorrect','incomplete'].includes(prior.status))check(q,true);
+});
+filter.addEventListener('change',refresh);document.querySelector('#wrongFilter').addEventListener('click',e=>{wrongOnly=!wrongOnly;e.target.setAttribute('aria-pressed',String(wrongOnly));e.target.textContent=wrongOnly?'返回全部题':'只练错题';refresh();});const resetPanel=document.querySelector('#resetPanel');document.querySelector('#reset').addEventListener('click',()=>{resetPanel.hidden=false;document.querySelector('#confirmReset').focus();});document.querySelector('#cancelReset').addEventListener('click',()=>{resetPanel.hidden=true;document.querySelector('#reset').focus();});document.querySelector('#confirmReset').addEventListener('click',()=>{cards.forEach(q=>{q.inputs.forEach(input=>{input.value='';input.parentElement.classList.remove('correct','incorrect');input.parentElement.querySelector('.field-result').textContent='';});q.status='new';q.wrong=false;q.seen=false;q.feedback.textContent='';q.card.classList.remove('passed','revealed');q.card.querySelector('input.ctl').checked=false;q.card.querySelectorAll('.ans').forEach((x,i)=>x.textContent=`（${i+1}）`);});wrongOnly=false;filter.value='all';const toggle=document.querySelector('#wrongFilter');toggle.textContent='只练错题';toggle.setAttribute('aria-pressed','false');resetPanel.hidden=true;persist();refresh();document.querySelector('#reset').focus();});refresh();document.querySelector('#runtimeWarning').hidden=true;
+
+})();
+</script></body>
+</html>
